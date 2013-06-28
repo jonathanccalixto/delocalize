@@ -338,5 +338,26 @@ class DelocalizeActionViewTest < ActionView::TestCase
     assert_dom_equal '<input id="product_some_value_with_default" name="product[some_value_with_default]" size="30" type="text" value="0,00" />',
       text_field(:product, :some_value_with_default)
   end
-end
 
+  class DelocalizeTest < ActiveSupport::TestCase
+    def setup
+      Time.zone = 'Berlin' # make sure everything works as expected with TimeWithZone
+    end
+
+    test "valid localized with a valid date" do
+      assert Date.valid_localized?('19.10.2009')
+    end
+
+    test "valid localized with a valid datetime" do
+      assert DateTime.valid_localized?('19.10.2009 12:00')
+    end
+
+    test "valid localized with a invalid date" do
+      assert !Date.valid_localized?('10.19.2009')
+    end
+
+    test "valid localized with a invalid datetime" do
+      assert !DateTime.valid_localized?('19.10.2009 25:00')
+    end
+  end
+end
